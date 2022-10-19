@@ -52,6 +52,7 @@ struct ContentView: View {
                     }
                 }
             }
+            .foregroundColor(Color.pink)
             .onTapGesture {
                 iconTapped.toggle()
             }
