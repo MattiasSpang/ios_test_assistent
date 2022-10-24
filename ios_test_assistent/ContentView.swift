@@ -7,10 +7,9 @@
 
 import SwiftUI
 
-class TodoItem: Identifiable{
-    
-    @State var name: String
-    @State var checked: Bool
+struct TodoItem{
+    var name: String
+    var checked: Bool
     
     init(name: String, checked: Bool) {
         self.name = name
@@ -21,46 +20,51 @@ class TodoItem: Identifiable{
         return self.name
     }
     
-    func getChecked() -> Bool{
+    func getChecked() -> Bool {
         return self.checked
     }
     
-    func toggleChecked(){
+    mutating func toggleChecked(){
         self.checked.toggle()
     }
-    
 }
 
 struct ContentView: View {
     var menuName: String = "Menu"
-    @State var todoArray: [TodoItem] = []
-    @State var iconTapped: Bool = false
+    @State  var todoArray: [TodoItem] = []
     @State var todoText: String = ""
     
     var body: some View {
         VStack {
             List(){
-                ForEach(todoArray){ item in
+                ForEach(0..<todoArray.count, id: \.self){ i in
                     HStack{
-                        Text(item.name)
+                        Text(String(todoArray[i].getName()))
                         Spacer()
-                        if(iconTapped){
-                            Image(systemName: "checkmark.circle")
+                        if(todoArray[i].checked){
+                            Button{
+                                todoArray[i].toggleChecked()
+                            }label: {
+                                Image(systemName: "checkmark.circle")
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }else{
-                            Image(systemName: "circle")
+                            Button{
+                                todoArray[i].toggleChecked()
+                            }label: {
+                                Image(systemName: "circle")
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                     }
                 }
             }
             .foregroundColor(Color.pink)
-            .onTapGesture {
-                iconTapped.toggle()
-            }
             .foregroundColor(Color.pink)
             Spacer()
             TextField("Enter Todo item: ", text: $todoText)
                 .onSubmit {
-                    let todoitem = TodoItem(name: todoText, checked: false)
+                    var todoitem = TodoItem(name: todoText, checked: false)
                     todoArray.append(todoitem)
                     todoText = ""
                 }
